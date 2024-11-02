@@ -1,0 +1,106 @@
+NALOGA 1:
+
+.text
+.org 0x20
+@spremenljivke
+STEV1: 	.word 10	@.HWORD		@.BYTE
+STEV2:	.word 5		@.HWORD		@.BYTE
+REZ:	.space 4	@.SPACE 2	@.SPACE 1
+.align
+.global _start
+_start:
+@program
+
+	ADR R0, STEV1
+	LDR R1, [R0]	@LDRB LDRH
+	
+	ADR R0, STEV2
+	LDR R2, [R0]	@LDRB LDRH
+	
+	ADD R3, R1, R2	@SUB R3, R1, R2
+	
+	ADR R0, REZ
+	STR R3, [R0]	@STRB STRH
+
+
+	
+NALOGA 2:
+
+.text
+.org 0x20
+@spremenljivke
+STEV1: 	.word 0x50
+STEV2:	.word 100
+STEV3:	.word 0x2F
+.align
+.global _start
+_start:
+@program
+
+	ADR R0, STEV1
+	LDR R1, [R0]
+	
+	ADR R0, STEV2
+	LDR R2, [R0]
+	
+	ADR R0, STEV3
+	LDR R3, [R0]
+	
+	ADD R4, R2, R3
+	SUB R1, R4, R1
+	
+	ADR R0, STEV1
+	STR R1, [R0]
+
+
+
+NALOGA 3:
+
+.text
+.org 0x20
+@spremenljivke
+STEV1: 	.word 0x12345678
+STEV2:	.byte 128
+		.align
+STEV3:	.hword 0xF123
+.align
+.global _start
+_start:
+@program
+
+	ADR R0, STEV1
+	LDR R1, [R0]
+	
+	ADR R0, STEV2
+	LDRB R2, [R0]	@Nepredznačeno
+	LDRSB R3, [R0]	@Predznačeno
+	
+	ADR R0, STEV3
+	LDRH R4, [R0]	@Nepredznačeno
+	LDRSH R5, [R0]	@Predznačeno
+	
+end: b end
+
+
+
+NALOGA 4:
+.text
+.org 0x20
+@spremenljivke
+STEV1:	.byte 15
+STEV2:	.byte 130
+.align
+.global _start
+_start:
+@program
+	ADR R0, STEV1
+	LDR R1, [R0]
+	
+	ADR R0, STEV1
+	LDR R2, [R0]
+	
+	ADD R1, R1, R2
+	
+	ADR R0, STEV1
+	STRB R1, [R0]
+end: b end

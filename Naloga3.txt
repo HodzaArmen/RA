@@ -1,0 +1,56 @@
+Naloga1
+	MOV R1, #128	@Se prevede v 0xe3a01080
+
+Na začetku
+	R1: 0x00
+	R15: 0x20	@Naslov prvega ukaza
+
+Na koncu
+	R1: 0x80
+	R15: 0x24	@Se poveča za 4 za naslednji ukaz
+
+Naloga2
+.text
+.org 0x20
+@spremenljivke
+stev1: .word 0x12345678
+stev2: .byte 128
+	   .align
+stev3: .hword 0xF123
+
+.align
+.global _start
+_start:
+@program
+
+adr r0, stev1
+ldr r1, [r0]
+
+adr r0, stev2
+ldrb r1, [r0]
+
+adr r0, stev3
+ldrh r1, [r0]
+
+end: b end	
+
+Naloga3
+.text
+.org 0x20
+@spremenljivke
+STEV1: 	.word   42
+STEV2:  .word   69
+.align
+.global _start
+_start:
+@program
+	
+	ADR R0, Stev1
+	LDR R1, [R0]
+	ADR R0, Stev2
+	LDR R1, [R0]
+	
+
+end: b end
+
+ŠE ZA 8b IN 16b

@@ -1,0 +1,115 @@
+.text
+.org 0x20
+izvorna_koda: .asciz " \n\n stev1: .var 0xf123 @ komentar 1\n @prazna vrstica \n stev2: .var 15\nstev3: .var 128\n_start:\n mov r1, #5 @v r1 premakni 5\nmov r2, #1\nukaz3: add r1, #1\nb _start"
+izvorna_koda_pocisceno: .space 120
+tabela_oznak: .space 100
+.align
+.global _start
+_start:
+	adr r0, izvorna_koda
+	adr r1, izvorna_koda_pocisceno
+	bl prvi_korak		//branch with link, v lr=r14 shrani povratni naslov
+	
+	adr r0, izvorna_koda_pocisceno
+	adr r1, izvorna_koda
+	b drugi_korak
+	
+prvi_korak:
+	ldrb r2, [r0], #1 	//najprej prebere kar je v [r0], nato poveca r0 za 1
+	cmp r2, #'@'		//komentar
+	beq komentar
+	cmp r2, #' '		//presledek
+	beq presledek
+	cmp r2, #0 			//konec
+	beq konec_prvi_korak
+	cmp r2, #':'		//zaradi sintakse (_start: mov r1, #5), moram po dvopičju pogledat, če je \n
+	beq pogoj2
+	strb r2, [r1], #1 	//shrani v r1, nato r1 poveca za 1
+	cmp r2, #'\n'		//če je trenutni znak bil \n, moram v novi vrstici preskocit komentarje, ki so na začetku
+	beq poglej_komentar
+	b prvi_korak
+
+pogoj2:
+	strb r2, [r1], #1	//shranim dvopičje
+	ldrb r2, [r0], #1
+	cmp r2, #'\n'		//če je po dvopičju \n, potem preskocim \n
+	beq prvi_korak
+	strb r2, [r1], #1 	//če ni dvopičje, potem shranim znak
+	b prvi_korak
+	
+poglej_komentar:
+	ldrb r2, [r0], #1
+	cmp r2, #' '		//če je presledek, ga preskocim, in ne shranujem
+	beq poglej_komentar
+	cmp r2, #'@'		//če najdem komentar, v tem vrstici moram shranit vsaj \n
+	beq komentar
+	strb r2, [r1], #1
+	b prvi_korak 
+	
+komentar:
+	ldrb r2, [r0], #1
+	cmp r2, #'\n'		//pogledam če je naslednji znak konec vrstice
+	beq konec_komentarja
+	cmp r2, #0
+	beq konec_prvi_korak
+	b komentar			//preskakujem znake v komentarju
+	
+konec_komentarja:
+	strb r2, [r1], #1	//shranim konec vrstice \n
+	b poglej_komentar	//po tej \n, isto moram preskocit presledke v novi vrstici
+	b prvi_korak 
+	
+presledek:
+	ldrb r2, [r0], #1
+	cmp r2, #' '		//pogledam, če je tudi naslednji znak presledek, da se znebim odvečnih
+	beq presledek
+	cmp r2, #'\n'		
+	beq nova_vrstica
+	cmp r2, #'@'
+	beq komentar
+	mov r3, #' '		//shranim samo en presledek
+	strb r3, [r1], #1
+	strb r2, [r1], #1	//nato shranim znak, ki sem ga pobral vnaprej
+	b prvi_korak
+	
+nova_vrstica:
+	mov r3, #'\n'		//shranim konec vrstice \n
+	strb r3, [r1], #1
+	b prvi_korak
+	
+konec_prvi_korak:
+	mov pc, lr			//vrnitev iz podprograma
+	
+drugi_korak:
+	ldrb r2, [r0], #1
+	cmp r2, #'\n'		//če je nova vrstica, pogledam če so za njim tudi nove vrstice prazne
+	beq pogoj
+	cmp r2, #0
+	beq _end
+	strb r2, [r1], #1
+	b drugi_korak
+	
+pogoj:
+	ldrb r2, [r0, #-2]	//ker sem r0 prej povecal za 1, moram zdej v minus 2 pogledat
+	cmp r2, #0			//pogledam če je znak bil prvi znak v nizu, saj pred njim ni nič
+	beq vrstica2		//rabim posebno zanko, da ta prvi \n v kodi odstrani
+	b vrstica
+
+vrstica:
+	ldrb r2, [r0], #1
+	cmp r2, #'\n'		//če je drugi znak spet \n, potem ga preskocim
+	beq vrstica
+	cmp r2, #0 			//konec
+	beq _end
+	mov r3, #'\n'		//če drugi znak ni \n, potem shranim \n v kodo
+	strb r3, [r1], #1
+	strb r2, [r1], #1	//shranim tudi drugi znak
+	b drugi_korak
+	
+vrstica2:
+	ldrb r2, [r0], #1
+	cmp r2, #'\n'
+	beq vrstica2		//če je drugi znak spet \n, potem ga preskocim
+	strb r2, [r1], #1	//če ni, potem shranim samo drugi znak, brez \n, saj ga moram preskocit ker je odvecna vrstica
+	b drugi_korak
+_end: b _end

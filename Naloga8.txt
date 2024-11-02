@@ -1,0 +1,82 @@
+Naloga1:
+.text
+.org 0x20
+@spremenljivke
+STEV1:	.word	0
+STEV2:	.word	200
+STEV3:	.word	100
+.align
+.global _start
+_start:
+@program
+		ADR R0, STEV2
+		LDR R2, [R0]
+		ADR R0, STEV3
+		LDR R3, [R0]
+		
+		MOV R1, R2
+		CMP R2, R3
+		BHI	DALJE
+		MOV R1, R3
+DALJE: 
+		ADR R0, STEV1
+		STR R1, [R0]
+end: b end	
+
+
+
+Naloga2:
+.text
+.org 0x20
+@spremenljivke
+STEV1:	.word	0
+STEV2:	.word	9
+STEV3:	.word	3
+.align
+.global _start
+_start:
+@program
+		ADR R0, STEV2
+		LDR R2, [R0]
+		ADR R0, STEV3
+		LDR R3, [R0]
+		
+		MOV R1, R2
+		CMP R2, R3
+		BLO	DALJE
+		MOV R1, R3
+DALJE: 
+		ADR R0, STEV1
+		STR R1, [R0]
+end: b end
+
+
+
+Naloga3:
+.text
+.org 0x20
+@spremenljivke
+STEV1:	.word	0
+STEV2:	.word	-2
+STEV3:	.word	2
+.align
+.global _start
+_start:
+@program
+		ADR R0, STEV2
+		LDR R2, [R0]
+		ADR R0, STEV3
+		LDR R3, [R0]
+		
+		MOV R1, R2
+		CMP R2, R3
+		BGT	DALJE	@BLT
+		MOV R1, R3
+DALJE: 
+		ADR R0, STEV1
+		STR R1, [R0]
+end: b end		
+
+
+
+Naloga4:

@@ -1,0 +1,149 @@
+        .text
+        .org 0x20
+
+@spremenljivke
+STEV1: 	.word   0x1234
+STEV2:  .word   0x4567
+
+        .align 
+Naloga1		
+        .global _start
+_start:
+	
+		@a - ta je po navodilih
+		ADR R0, STEV1
+		LDR R1, [R0]
+		ADR R0, STEV2
+		LDR R2, [R0]
+		STR R1, [R0]
+		ADR R0, STEV1
+		STR R2, [R0]
+		
+		@b
+		ADR R0, STEV1
+		LDR R1, [R0]
+		ADR R3, STEV2
+		LDR R2, [R3]
+		STR R1, [R3]
+		STR R2, [R0]
+		
+		@c
+		ADR R0, STEV1
+		LDR R1, [R0]
+		LDR R2, [R0,#4]
+		STR R2, [R0]
+		STR R1, [R0,#4]
+end:  		b 	  end
+
+
+Naloga2
+        .text
+        .org 0x20
+
+@spremenljivke
+TABELA:	.space 5 @rezerviramo 5bajtov za tabelo
+
+        .align 
+		
+        .global _start
+_start:
+
+		MOV R1, #0xFF	@V R1 je 0xFF
+		ADR R0, TABELA	@R0 kaže na tabelo
+		
+		STRB R1, [R0]
+		STRB R1, [R0,#1]
+		STRB R1, [R0,#2]
+		STRB R1, [R0,#3]
+		STRB R1, [R0,#4]
+		
+end:  		b 	  end
+
+
+Nal3
+        .text
+        .org 0x20
+
+@spremenljivke
+TABELA:	.space 6 @rezerviramo 6bajtov za tabelo
+
+        .align 
+		
+        .global _start
+_start:
+
+		ADR R0, TABELA		@R0 kaže na prvi bajt tabele
+		
+		MOV R1, #1		
+		STRB R1, [R0]		@storamo 1 v tabelo
+		
+		ADD R1, R1, #1		@prištejemo za 1 več
+		STRB R1, [R0, #1]	@storamo 2 v tabelo
+		
+		ADD R1, R1, #1		@lahko tudi MOV R1, #3
+		STRB R1, [R0, #2]
+		
+		ADD R1, R1, #1		
+		STRB R1, [R0, #3]
+		
+		ADD R1, R1, #1		
+		STRB R1, [R0, #4]
+		
+		ADD R1, R1, #1		
+		STRB R1, [R0, #5]
+		
+		@zamenjaj 1 in 6
+		LDRB R1, [R0]
+		LDRB R2, [R0, #5]
+		STRB R1, [R0, #5]
+		STRB R2, [R0]
+		
+		@zamenjaj 2 in 5
+		LDRB R1, [R0, #1]
+		LDRB R2, [R0, #4]
+		STRB R1, [R0, #4]
+		STRB R2, [R0, #1]
+		
+		@zamenjaj 3 in 4
+		LDRB R1, [R0, #2]
+		LDRB R2, [R0, #3]
+		STRB R1, [R0, #3]
+		STRB R2, [R0, #2]
+		
+end:  		b 	  end
+
+
+Nal4
+        .text
+        .org 0x20
+
+@spremenljivke
+STEV1:	.word 0x12345678
+STEV2:	.word 0
+
+
+        .align 
+		
+        .global _start
+_start:
+
+		ADR R0, STEV1
+		ADR R1, STEV2
+		
+		LDRB R2, [R0, #3]
+		STRB R2, [R1]
+		
+		LDRB R2, [R0, #2]
+		STRB R2, [R1, #1]
+		
+		LDRB R2, [R0, #1]
+		STRB R2, [R1, #2]
+		
+		LDRB R2, [R0]
+		STRB R2, [R1, #3]
+		
+end:  		b 	  end
+
+
+
+
